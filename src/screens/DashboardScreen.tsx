@@ -25,13 +25,14 @@ export const DashboardScreen: React.FC<Props> = ({
   const getStartupName = (id: string) => startups.find((s) => s.id === id)?.name || "Unknown";
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] flex flex-col">
-      <header className="flex items-center gap-2 px-6 h-14 border-b border-gray-200 bg-white shadow-sm">
-        <i className="fas fa-bolt text-emerald-600" />
-        <span className="text-gray-900 font-bold">InternAI</span>
-      </header>
+    <div className="screen-container">
+      <div className="min-h-screen bg-[#FAF8F5] flex flex-col">
+        <header className="flex items-center gap-2 px-8 h-14 border-b border-gray-200 bg-white shadow-sm">
+          <i className="fas fa-bolt text-emerald-600" />
+          <span className="text-gray-900 font-bold">InternAI</span>
+        </header>
 
-      <main className="flex-1 px-6 py-6 max-w-2xl mx-auto w-full space-y-6">
+        <main className="flex-1 px-8 py-6 max-w-2xl mx-auto w-full space-y-6">
         {/* Stats — from demo flow: reply rate lift, response time, positive-reply count, match quality */}
         <div className="grid grid-cols-2 gap-3">
           <Stat icon="fa-chart-line" color="text-emerald-600" label="Reply Rate" value={`${stats.replyRate.toFixed(0)}%`} />
@@ -96,6 +97,7 @@ export const DashboardScreen: React.FC<Props> = ({
           )}
         </div>
       </main>
+    </div>
     </div>
   );
 };

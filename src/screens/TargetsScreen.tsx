@@ -86,14 +86,15 @@ export const TargetsScreen: React.FC<Props> = ({ startups, onAdd, onUpdate, onGe
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] flex flex-col">
-      <header className="flex items-center gap-3 px-6 h-14 border-b border-gray-200 bg-white shadow-sm">
-        <button onClick={onBack} className="text-gray-500 hover:text-gray-900"><i className="fas fa-arrow-left" /></button>
-        <i className="fas fa-bolt text-emerald-600" />
-        <span className="text-gray-900 font-bold">Target Startups</span>
-      </header>
+    <div className="screen-container">
+      <div className="min-h-screen bg-[#FAF8F5] flex flex-col">
+        <header className="flex items-center gap-3 px-8 h-14 border-b border-gray-200 bg-white shadow-sm">
+          <button onClick={onBack} className="text-gray-500 hover:text-gray-900"><i className="fas fa-arrow-left" /></button>
+          <i className="fas fa-bolt text-emerald-600" />
+          <span className="text-gray-900 font-bold">Target Startups</span>
+        </header>
 
-      <main className="flex-1 px-6 py-6 max-w-2xl mx-auto w-full space-y-4">
+        <main className="flex-1 px-8 py-6 max-w-2xl mx-auto w-full space-y-4">
         <div className="flex items-center justify-between">
           <p className="text-sm text-gray-600">{startups.length} startup{startups.length !== 1 ? "s" : ""}</p>
           <button
@@ -302,6 +303,7 @@ export const TargetsScreen: React.FC<Props> = ({ startups, onAdd, onUpdate, onGe
           </div>
         )}
       </main>
+    </div>
     </div>
   );
 };

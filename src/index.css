@@ -11,6 +11,7 @@ body {
   font-family: "Inter", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   background-color: #FAF8F5;
+  padding: 16px;
 }
 
 /* Custom scrollbar for light theme */
@@ -30,4 +31,14 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #9CA3AF;
+}
+
+/* Screen container with rounded corners */
+.screen-container {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  background: white;
+  max-width: 1200px;
+  margin: 0 auto;
 }

@@ -68,17 +68,18 @@ export const ProfileSetupScreen: React.FC<Props> = ({ onComplete, onBack }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] flex flex-col">
-      {/* Header */}
-      <header className="flex items-center gap-3 px-6 h-14 border-b border-gray-200 bg-white shadow-sm">
-        <button onClick={onBack} className="text-gray-500 hover:text-gray-900">
-          <i className="fas fa-arrow-left" />
-        </button>
-        <i className="fas fa-bolt text-emerald-600" />
-        <span className="text-gray-900 font-bold">InternAI</span>
-      </header>
+    <div className="screen-container">
+      <div className="min-h-screen bg-[#FAF8F5] flex flex-col">
+        {/* Header */}
+        <header className="flex items-center gap-3 px-8 h-14 border-b border-gray-200 bg-white shadow-sm">
+          <button onClick={onBack} className="text-gray-500 hover:text-gray-900">
+            <i className="fas fa-arrow-left" />
+          </button>
+          <i className="fas fa-bolt text-emerald-600" />
+          <span className="text-gray-900 font-bold">InternAI</span>
+        </header>
 
-      <main className="flex-1 px-6 py-8 max-w-lg mx-auto w-full">
+        <main className="flex-1 px-8 py-8 max-w-lg mx-auto w-full">
         <h2 className="text-2xl font-bold text-gray-900 mb-1">Upload Once</h2>
         <p className="text-sm text-gray-600 mb-8">
           Upload your documents once — AI will extract relevant experience and match your writing style.
@@ -180,6 +181,7 @@ export const ProfileSetupScreen: React.FC<Props> = ({ onComplete, onBack }) => {
           </button>
         </form>
       </main>
+    </div>
     </div>
   );
 };

@@ -29,14 +29,15 @@ export const GenerateScreen: React.FC<Props> = ({ startups, onGenerate, onBack }
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] flex flex-col">
-      <header className="flex items-center gap-3 px-6 h-14 border-b border-gray-200 bg-white shadow-sm">
-        <button onClick={onBack} className="text-gray-500 hover:text-gray-900"><i className="fas fa-arrow-left" /></button>
-        <i className="fas fa-bolt text-emerald-600" />
-        <span className="text-gray-900 font-bold">Generate Outreach</span>
-      </header>
+    <div className="screen-container">
+      <div className="min-h-screen bg-[#FAF8F5] flex flex-col">
+        <header className="flex items-center gap-3 px-8 h-14 border-b border-gray-200 bg-white shadow-sm">
+          <button onClick={onBack} className="text-gray-500 hover:text-gray-900"><i className="fas fa-arrow-left" /></button>
+          <i className="fas fa-bolt text-emerald-600" />
+          <span className="text-gray-900 font-bold">Generate Outreach</span>
+        </header>
 
-      <main className="flex-1 px-6 py-6 max-w-2xl mx-auto w-full space-y-6">
+        <main className="flex-1 px-8 py-6 max-w-2xl mx-auto w-full space-y-6">
         {/* Startup picker */}
         <div>
           <label className="block text-sm text-gray-700 mb-2 font-medium">Select a startup</label>
@@ -138,6 +139,7 @@ export const GenerateScreen: React.FC<Props> = ({ startups, onGenerate, onBack }
           </div>
         )}
       </main>
+    </div>
     </div>
   );
 };
