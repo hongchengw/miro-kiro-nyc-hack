@@ -36,6 +36,8 @@ AI-powered outreach that analyzes your resume for relevant experience and matche
 - **Voice matching**: Analyzes writing sample to preserve your authentic style
 - **Founder preference detection**: Surfaces what matters to each recipient
 - **AI-powered web scraping**: Auto-extracts company info from website URLs (industry, stage, tech stack)
+- **Lead generation**: AI discovers 10 relevant startups at a time based on your profile (rate-limited to 3 generations per few hours)
+- **Adaptive feedback system**: Mark outreach as success/failed with optional notes — AI learns and adapts future messages
 
 ## Impact
 
@@ -76,16 +78,18 @@ Open http://localhost:5173
 
 ```
 src/
-├── types/index.ts              — Interfaces for UserProfile (with documents), Startup, OutreachMessage
+├── types/index.ts              — Interfaces for UserProfile, Startup, OutreachMessage, StartupLead
 ├── services/
-│   ├── engine.ts               — 5-step workflow engine with RAG analysis
-│   └── webscraper.ts           — AI web scraper for extracting company data from URLs
+│   ├── engine.ts               — 5-step workflow engine with RAG analysis & adaptive learning
+│   ├── webscraper.ts           — AI web scraper for extracting company data from URLs
+│   └── leadGenerator.ts        — AI-powered startup lead generation with rate limiting
 ├── screens/
 │   ├── LandingScreen.tsx       — Problem/Solution/Impact + How It Works
 │   ├── ProfileSetupScreen.tsx  — Document uploads (content + style)
 │   ├── DashboardScreen.tsx     — Stats: reply rate, sent, positive replies
-│   ├── TargetsScreen.tsx       — URL-based startup addition with web scraping
-│   └── GenerateScreen.tsx      — Before vs After comparison + rationale
+│   ├── TargetsScreen.tsx       — URL-based startup addition with web scraping & feedback system
+│   ├── GenerateScreen.tsx      — Before vs After comparison + rationale
+│   └── LeadsScreen.tsx         — AI-powered startup discovery (10 leads at a time)
 └── App.tsx                     — Navigation flow
 ```
 
@@ -93,7 +97,9 @@ src/
 
 1. **Before vs After**: Side-by-side of generic cold email vs InternAI-generated message
 2. **Dashboard**: Reply rate lift, response time, positive-reply count, match scores
-3. **Generate**: Select startup → click Generate → see crafted outreach with rationale
+3. **Generate Leads**: Discover 10 AI-matched startups at a time (rate-limited to 3 per few hours)
+4. **Adaptive Feedback**: Mark outreach as success/failed — AI learns and improves future messages
+5. **Generate**: Select startup → click Generate → see crafted outreach with rationale
 
 ## License
 

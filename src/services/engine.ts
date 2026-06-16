@@ -46,6 +46,13 @@ export class OutreachEngine {
     this.startups.push(...startups);
   }
 
+  updateStartup(id: string, updates: Partial<Startup>): void {
+    const index = this.startups.findIndex((s) => s.id === id);
+    if (index !== -1) {
+      this.startups[index] = { ...this.startups[index], ...updates };
+    }
+  }
+
   getStartups(): Startup[] {
     return this.startups;
   }
@@ -72,12 +79,15 @@ export class OutreachEngine {
   async generateMessage(startup: Startup, research: StartupResearch): Promise<OutreachMessage> {
     if (!this.profile) throw new Error("Profile not set");
 
+    // Apply adaptive learning from feedback
+    const learnings = this.analyzeSuccessPatterns();
+
     const message: OutreachMessage = {
       id: crypto.randomUUID(),
       startupId: startup.id,
       subject: this.craftSubject(startup, research),
-      body: this.craftBodyWithStyle(startup, research),
-      rationale: this.buildRationale(research),
+      body: this.craftBodyWithStyle(startup, research, learnings),
+      rationale: this.buildRationale(research, learnings),
       matchScore: Math.min(100, research.relevantSkills.length * 20 + research.founderPriorities.length * 15 + research.hooks.length * 10),
       status: "draft",
       createdAt: new Date().toISOString(),
@@ -184,7 +194,7 @@ export class OutreachEngine {
 
   // --- Style-Aware Body Generation ---
   // Uses writing sample to match user's style, habits, structure
-  private craftBodyWithStyle(startup: Startup, research: StartupResearch): string {
+  private craftBodyWithStyle(startup: Startup, research: StartupResearch, learnings?: { successPatterns: string[]; avoidPatterns: string[] }): string {
     if (!this.profile) return "";
 
     // In production: analyze this.profile.styleSample.text for:
@@ -216,13 +226,43 @@ export class OutreachEngine {
     return lines.filter((l) => l !== undefined).join("\n");
   }
 
-  private buildRationale(research: StartupResearch): string {
+  private buildRationale(research: StartupResearch, learnings?: { successPatterns: string[]; avoidPatterns: string[] }): string {
     const parts: string[] = [];
     if (research.relevantSkills.length > 0) parts.push(`Matched ${research.relevantSkills.length} skills from your resume to their domain`);
     if (research.founderPriorities.length > 0) parts.push(`Aligned with ${research.founderPriorities.length} founder priorities`);
     if (research.hooks.length > 0) parts.push(`Found ${research.hooks.length} credible hooks`);
     parts.push(`Writing style adapted from your sample document`);
+
+    if (learnings) {
+      if (learnings.successPatterns.length > 0) {
+        parts.push(`Applied ${learnings.successPatterns.length} successful pattern(s) from previous outreach`);
+      }
+      if (learnings.avoidPatterns.length > 0) {
+        parts.push(`Avoided ${learnings.avoidPatterns.length} unsuccessful approach(es)`);
+      }
+    }
+
     return parts.join(". ") + ".";
+  }
+
+  // --- Adaptive Learning from Feedback ---
+  private analyzeSuccessPatterns(): { successPatterns: string[]; avoidPatterns: string[] } {
+    const successPatterns: string[] = [];
+    const avoidPatterns: string[] = [];
+
+    // Analyze startups with feedback
+    const successfulStartups = this.startups.filter((s) => s.outreachStatus === "success" && s.feedback);
+    const failedStartups = this.startups.filter((s) => s.outreachStatus === "failed" && s.feedback);
+
+    successfulStartups.forEach((s) => {
+      if (s.feedback) successPatterns.push(s.feedback);
+    });
+
+    failedStartups.forEach((s) => {
+      if (s.feedback) avoidPatterns.push(s.feedback);
+    });
+
+    return { successPatterns, avoidPatterns };
   }
 }
 

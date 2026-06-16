@@ -7,6 +7,7 @@ interface Props {
   startups: Startup[];
   onGoToTargets: () => void;
   onGoToGenerate: () => void;
+  onGoToLeads: () => void;
 }
 
 /**
@@ -19,6 +20,7 @@ export const DashboardScreen: React.FC<Props> = ({
   startups,
   onGoToTargets,
   onGoToGenerate,
+  onGoToLeads,
 }) => {
   const getStartupName = (id: string) => startups.find((s) => s.id === id)?.name || "Unknown";
 
@@ -39,17 +41,24 @@ export const DashboardScreen: React.FC<Props> = ({
         </div>
 
         {/* Actions */}
-        <div className="flex gap-3">
+        <div className="grid grid-cols-3 gap-3">
+          <button
+            onClick={onGoToLeads}
+            className="h-10 rounded-xl border border-emerald-300 bg-emerald-50 text-emerald-700 text-sm font-medium flex items-center justify-center gap-2 hover:bg-emerald-100 transition-colors shadow-sm"
+          >
+            <i className="fas fa-lightbulb text-xs" />
+            Generate Leads
+          </button>
           <button
             onClick={onGoToTargets}
-            className="flex-1 h-10 rounded-xl border border-gray-300 bg-white text-gray-900 text-sm font-medium flex items-center justify-center gap-2 hover:bg-gray-50 hover:border-emerald-300 transition-colors shadow-sm"
+            className="h-10 rounded-xl border border-gray-300 bg-white text-gray-900 text-sm font-medium flex items-center justify-center gap-2 hover:bg-gray-50 hover:border-emerald-300 transition-colors shadow-sm"
           >
             <i className="fas fa-building text-gray-500 text-xs" />
             Manage Targets
           </button>
           <button
             onClick={onGoToGenerate}
-            className="flex-1 h-10 rounded-xl bg-emerald-600 text-white text-sm font-semibold flex items-center justify-center gap-2 hover:bg-emerald-500 transition-colors shadow-md"
+            className="h-10 rounded-xl bg-emerald-600 text-white text-sm font-semibold flex items-center justify-center gap-2 hover:bg-emerald-500 transition-colors shadow-md"
           >
             <i className="fas fa-magic text-xs" />
             Generate

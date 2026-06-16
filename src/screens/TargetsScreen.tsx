@@ -5,6 +5,7 @@ import { scrapeCompanyWebsite, ScrapedData } from "../services/webscraper";
 interface Props {
   startups: Startup[];
   onAdd: (startup: Startup) => void;
+  onUpdate: (id: string, updates: Partial<Startup>) => void;
   onGenerate: (startup: Startup) => void;
   onBack: () => void;
 }
@@ -14,8 +15,9 @@ interface Props {
  * From the Miro spec How It Works step 2.
  * 
  * Now uses URL-based web scraping to auto-extract company details.
+ * Includes adaptive feedback system for tracking outreach success/failure.
  */
-export const TargetsScreen: React.FC<Props> = ({ startups, onAdd, onGenerate, onBack }) => {
+export const TargetsScreen: React.FC<Props> = ({ startups, onAdd, onUpdate, onGenerate, onBack }) => {
   const [showForm, setShowForm] = useState(false);
   const [name, setName] = useState("");
   const [founder, setFounder] = useState("");
@@ -62,6 +64,9 @@ export const TargetsScreen: React.FC<Props> = ({ startups, onAdd, onGenerate, on
       techStack: scrapedData.techStack,
       industry: scrapedData.industry,
       scrapedAt: new Date().toISOString(),
+      outreachStatus: "not-sent",
+      feedback: "",
+      addedAt: new Date().toISOString(),
     });
     
     setShowForm(false);
@@ -70,6 +75,14 @@ export const TargetsScreen: React.FC<Props> = ({ startups, onAdd, onGenerate, on
     setUrl("");
     setScrapedData(null);
     setError(null);
+  };
+
+  const handleStatusChange = (id: string, status: "success" | "failed" | "sent") => {
+    onUpdate(id, { outreachStatus: status });
+  };
+
+  const handleFeedbackChange = (id: string, feedback: string) => {
+    onUpdate(id, { feedback });
   };
 
   return (
@@ -207,6 +220,71 @@ export const TargetsScreen: React.FC<Props> = ({ startups, onAdd, onGenerate, on
                 <span key={t} className="text-[11px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-700 border border-gray-200">{t}</span>
               ))}
             </div>
+
+            {/* Adaptive Feedback Section */}
+            <div className="pt-2 border-t border-gray-200">
+              <p className="text-xs text-gray-600 mb-2 font-medium">Outreach Status:</p>
+              <div className="flex gap-2 mb-2">
+                <button
+                  onClick={() => handleStatusChange(s.id, "success")}
+                  className={`flex-1 h-8 rounded-lg text-xs font-semibold transition-colors ${
+                    s.outreachStatus === "success"
+                      ? "bg-green-100 text-green-700 border-2 border-green-500"
+                      : "bg-white text-gray-600 border border-gray-300 hover:border-green-400"
+                  }`}
+                >
+                  <i className="fas fa-check-circle text-[10px] mr-1" />
+                  Success
+                </button>
+                <button
+                  onClick={() => handleStatusChange(s.id, "failed")}
+                  className={`flex-1 h-8 rounded-lg text-xs font-semibold transition-colors ${
+                    s.outreachStatus === "failed"
+                      ? "bg-red-100 text-red-700 border-2 border-red-500"
+                      : "bg-white text-gray-600 border border-gray-300 hover:border-red-400"
+                  }`}
+                >
+                  <i className="fas fa-times-circle text-[10px] mr-1" />
+                  Failed
+                </button>
+                <button
+                  onClick={() => handleStatusChange(s.id, "sent")}
+                  className={`flex-1 h-8 rounded-lg text-xs font-semibold transition-colors ${
+                    s.outreachStatus === "sent"
+                      ? "bg-blue-100 text-blue-700 border-2 border-blue-500"
+                      : "bg-white text-gray-600 border border-gray-300 hover:border-blue-400"
+                  }`}
+                >
+                  <i className="fas fa-paper-plane text-[10px] mr-1" />
+                  Sent
+                </button>
+              </div>
+
+              {s.outreachStatus && s.outreachStatus !== "not-sent" && (
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Optional: Add feedback to improve future messages..."
+                    value={s.feedback || ""}
+                    onChange={(e) => handleFeedbackChange(s.id, e.target.value)}
+                    className="w-full h-8 rounded-lg px-3 text-xs bg-gray-50 border border-gray-300 text-gray-900 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+                  />
+                  {s.outreachStatus === "success" && (
+                    <p className="text-[10px] text-green-600 mt-1">
+                      <i className="fas fa-info-circle mr-1" />
+                      AI will use this pattern for future messages
+                    </p>
+                  )}
+                  {s.outreachStatus === "failed" && (
+                    <p className="text-[10px] text-red-600 mt-1">
+                      <i className="fas fa-info-circle mr-1" />
+                      AI will avoid this approach in future messages
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+
             <button
               onClick={() => onGenerate(s)}
               className="w-full h-8 rounded-lg bg-emerald-600 text-white text-xs font-semibold flex items-center justify-center gap-1.5 hover:bg-emerald-500 mt-1 shadow-sm"

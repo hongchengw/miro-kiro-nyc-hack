@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import { UserProfile, Startup, OutreachMessage } from "./types";
+import { UserProfile, Startup, OutreachMessage, StartupLead } from "./types";
 import { engine } from "./services/engine";
 import { LandingScreen } from "./screens/LandingScreen";
 import { ProfileSetupScreen } from "./screens/ProfileSetupScreen";
 import { DashboardScreen } from "./screens/DashboardScreen";
 import { TargetsScreen } from "./screens/TargetsScreen";
 import { GenerateScreen } from "./screens/GenerateScreen";
+import { LeadsScreen } from "./screens/LeadsScreen";
 
-type Screen = "landing" | "profile" | "dashboard" | "targets" | "generate";
+type Screen = "landing" | "profile" | "dashboard" | "targets" | "generate" | "leads";
 
 /**
  * InternAI — Personalized startup outreach in your voice.
@@ -29,6 +30,32 @@ const App: React.FC = () => {
   const handleAddStartup = (startup: Startup) => {
     engine.addStartups([startup]);
     setStartups([...engine.getStartups()]);
+  };
+
+  const handleUpdateStartup = (id: string, updates: Partial<Startup>) => {
+    const updated = startups.map((s) => (s.id === id ? { ...s, ...updates } : s));
+    setStartups(updated);
+    // Update in engine as well
+    engine.updateStartup(id, updates);
+  };
+
+  const handleAddLeadToTargets = (lead: StartupLead) => {
+    const startup: Startup = {
+      id: lead.id,
+      name: lead.name,
+      founderName: "Founder", // User will need to fill this when generating
+      website: lead.website,
+      product: lead.matchReason,
+      description: `${lead.industry} startup looking for ${lead.hiringFor.join(", ")}`,
+      stage: lead.stage,
+      techStack: lead.techStack,
+      industry: lead.industry,
+      scrapedAt: new Date().toISOString(),
+      outreachStatus: "not-sent",
+      feedback: "",
+      addedAt: new Date().toISOString(),
+    };
+    handleAddStartup(startup);
   };
 
   const handleGenerate = async (startup: Startup): Promise<OutreachMessage> => {
@@ -60,6 +87,7 @@ const App: React.FC = () => {
           startups={startups}
           onGoToTargets={() => setScreen("targets")}
           onGoToGenerate={() => setScreen("generate")}
+          onGoToLeads={() => setScreen("leads")}
         />
       );
 
@@ -68,10 +96,20 @@ const App: React.FC = () => {
         <TargetsScreen
           startups={startups}
           onAdd={handleAddStartup}
+          onUpdate={handleUpdateStartup}
           onGenerate={(s) => {
             handleGenerate(s);
             setScreen("generate");
           }}
+          onBack={() => setScreen("dashboard")}
+        />
+      );
+
+    case "leads":
+      return (
+        <LeadsScreen
+          profile={engine.getProfile()}
+          onAddToTargets={handleAddLeadToTargets}
           onBack={() => setScreen("dashboard")}
         />
       );

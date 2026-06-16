@@ -1,15 +1,17 @@
-﻿export interface UserProfile {
+export interface UserProfile {
   id: string;
   name: string;
   email: string;
+  /** Resume or cover letter — AI scans for relevant experience matching target startup */
   contentDocument?: {
     type: "resume" | "cover-letter";
     file: File;
-    text: string;
+    text: string; // extracted text for RAG analysis
   };
+  /** Writing sample — AI studies writing style/habits/structure ONLY, ignores content */
   styleSample?: {
     file: File;
-    text: string;
+    text: string; // extracted text for style analysis
   };
   preferences: {
     roles: string[];
@@ -22,13 +24,18 @@ export interface Startup {
   id: string;
   name: string;
   founderName: string;
-  founderLinkedIn?: string;
+  website: string;
+  // Auto-scraped from website
   product: string;
   description: string;
   stage: "pre-seed" | "seed" | "series-a" | "series-b" | "growth";
   techStack: string[];
   industry: string;
-  website?: string;
+  scrapedAt?: string;
+  // Adaptive feedback
+  outreachStatus?: "not-sent" | "sent" | "success" | "failed";
+  feedback?: string;
+  addedAt?: string;
 }
 
 export interface StartupResearch {
@@ -66,4 +73,22 @@ export interface DashboardStats {
   avgResponseTime: number;
   positiveReplies: number;
   topMatchScore: number;
+}
+
+export interface StartupLead {
+  id: string;
+  name: string;
+  website: string;
+  techStack: string[];
+  industry: string;
+  stage: "pre-seed" | "seed" | "series-a" | "series-b" | "growth";
+  matchReason: string;
+  hiringFor: string[];
+}
+
+export interface LeadGenerationState {
+  generatedLeads: StartupLead[];
+  generationsUsed: number;
+  lastResetTime: string;
+  maxGenerations: number;
 }
